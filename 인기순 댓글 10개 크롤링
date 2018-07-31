@@ -1,0 +1,39 @@
+from selenium import webdriver
+import time
+
+import requests
+from bs4 import BeautifulSoup
+
+
+news_data = []
+driver = webdriver.Chrome('C:/Users/lg/Desktop/chromedriver.exe')
+driver.get('https://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&sectionId=103&date=20180730')
+time.sleep(2)
+f1 = driver.find_elements_by_css_selector('div.ranking_headline a')
+
+for i in range(0,30):
+    link = f1[i].get_attribute('href')
+    title = f1[i].text
+    news = {'title': link, 'link': title, 'comments': []}
+    news_data.append(news)
+
+ranking = 0
+
+for new in news_data:
+    link = f1[ranking].get_attribute('href')  #링크값 얻기
+    driver.get(link)
+    time.sleep(2)
+
+    comments = driver.find_elements_by_css_selector('span.u_cbox_contents')  # 댓글 크롤링
+    comments_list = []  # 댓글 리스트 초기화
+    for comment in comments:  # 댓글 크롤링 한걸 댓글 리스트에 넣기
+        comments_list.append(comment.text)
+
+    new['comments'] = comments_list
+    driver.get('https://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&sectionId=103&date=20180730')  # 처음 랭킹페이지로 돌아가기
+    time.sleep(2)
+
+
+print(news_data)
+
+
