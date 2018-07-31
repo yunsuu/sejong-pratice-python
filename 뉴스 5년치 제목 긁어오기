@@ -1,0 +1,26 @@
+import datetime
+import requests
+from bs4 import BeautifulSoup
+
+def getYesterday( dt ):
+    td = datetime.timedelta(days=1)
+
+    return dt - td
+
+#네이버 생활/문화 뉴스 TOP30
+#https://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&sectionId=103&date=20180722
+date = datetime.datetime.now()
+
+for i in range(1, 1825):
+    url = "https://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&sectionId=103&date=%s"
+    url = url % ( date.strftime("%Y%m%d") )
+
+    res = requests.get(url)
+    soup = BeautifulSoup(res.content, "html.parser")
+
+    titles = soup.select("div.ranking_headline a")
+
+    for title in titles:
+        print(title.text)
+
+    date = getYesterday(date)
