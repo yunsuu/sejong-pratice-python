@@ -1,0 +1,97 @@
+import pymysql
+import datetime
+import requests
+from bs4 import BeautifulSoup
+from selenium import webdriver
+import time
+
+driver = webdriver.Chrome('C:/Users/lg/Desktop/chromedriver.exe')
+
+
+conn = pymysql.connect(
+    host='localhost',
+    user='ljsql934',
+    password='123456789a',
+    db='newsdata',
+    charset='utf8'
+)
+
+cursor = conn.cursor()  #데이터 배이스에 연결된 객체
+
+
+def insert(description, like, unlike, news_idx):
+    INSERT_SQL = "INSERT INTO `comments`(`description`, `like`, unlike, news_idx) VALUE ('%s', '%d', '%d', '%d')"
+#comments 태이블에 데어터를 넣는다
+
+def getYesterday(dt):
+    td = datetime.timedelta(days=1)
+    return dt - td
+
+
+# 네이버 생활/문화 뉴스 TOP30
+# https://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day§ionId=103&date=20180722
+date = datetime.datetime.now()
+
+for i in range(2):
+#데일리 링크 들어가기
+    url = "https://news.naver.com/main/ranking/popularDay.nhn?rankingType=popular_day&sectionId=103&date=%s"
+    url = url % (date.strftime("%Y%m%d"))
+    driver.get(url)
+    time.sleep(1)
+
+#랭킹링크 얻기
+    link_list = []
+    f1 = driver.find_elements_by_css_selector('div.ranking_headline a')
+    for j in range(0, 30):
+        link = f1[j].get_attribute('href')
+        link_list.append(link)
+
+    for news_idx in range(0,30):
+
+    #댓글, 좋아요, 싫어요 크롤링해서 리스트화
+        comment_list = []
+        like_list = []
+        unlike_list = []
+        driver.get(link_list[news_idx])
+        time.sleep(2)
+
+    #댓글 리스트화
+        comments = driver.find_elements_by_css_selector('span.u_cbox_contents')
+        for comment in comments:
+            comment_list.append(comment.text)
+
+
+    #좋아요 리스트화
+        like_numbers = driver.find_elements_by_css_selector('em.u_cbox_cnt_recomm')
+        for like_number in like_numbers:
+            like_list.append(int(like_number.text))
+
+
+    #싫어요 리스트화
+        unlike_numbers = driver.find_elements_by_css_selector('em.u_cbox_cnt_unrecomm')
+        for unlike_number in unlike_numbers:
+            unlike_list.append(int(unlike_number.text))
+            #print(unlike_number.text)
+        print(unlike_list)
+
+        if len(comment_list) != 10:
+            for append_num in range(10-len(comment_list)):
+                comment_list.append('none')
+                like_list.append('0')
+                unlike_list.append('0')
+
+        print(comment_list)
+        print(like_list)
+        print(unlike_list)
+
+        for h in range(0,10):
+            insert(comment_list[h], like_list[h], unlike_list[h], news_idx)
+
+
+
+    date = getYesterday(date)
+
+
+SELECT_SQL = "SELECT * FROM `comments`"
+cursor.execute(SELECT_SQL)
+conn.commit() #작업 완료
