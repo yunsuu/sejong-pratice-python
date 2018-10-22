@@ -45,7 +45,7 @@ SAD = pygame.image.load('안건강.jpg')
 SAD = pygame.transform.scale(SAD, (400,400))
 GRADE = 4
 HEALTH = 3
-LIKE = 0
+
 
 
 
@@ -63,22 +63,38 @@ while not FINISH: #game loop
     for event in pygame.event.get():
         GRADE_TEXT = BASICFONT.render("GRADE: %d" %(GRADE), True, (40,40,40))
         HEALTH_TEXT = BASICFONT.render("HEALTH: %d" %(HEALTH), True, (40,40,40))
-        LIKE_TEXT = BASICFONT.render("LIKE: %d" %(LIKE),True,(40,40,40))
-        if SCENE_NUM == 1 or SCENE_NUM==2 or SCENE_NUM==7 :
+        if HEALTH == 0:
             DISPLAYSURF.fill((255,255,255))
+            TEXT=pygame.image.load('게임오버건강.png')
+            BACKGROUND = pygame.image.load('게임오버배경.jpg')
+            BACKGROUND = pygame.transform.scale(BACKGROUND, (1000,700))
+            DISPLAYSURF.blit(BACKGROUND, (0,0))
+            DISPLAYSURF.blit(TEXT,(BOXGAP+10,WINDOWHEIGHT-BOXGAP - BOXHEIGHT + 10))
+            break
+        if GRADE == 0:
+            DISPLAYSURF.fill((255,255,255))
+            TEXT=pygame.image.load('게임오버학점.png')
+            BACKGROUND = pygame.image.load('게임오버배경.jpg')
+            BACKGROUND = pygame.transform.scale(BACKGROUND, (1000,700))
+            DISPLAYSURF.blit(BACKGROUND, (0,0))
+            DISPLAYSURF.blit(TEXT,(BOXGAP+10,WINDOWHEIGHT-BOXGAP - BOXHEIGHT + 10))
+            break
+        if SCENE_NUM == 1 or SCENE_NUM==2 or SCENE_NUM==3 or SCENE_NUM == 8 or SCENE_NUM == 13 or SCENE_NUM == 14 or SCENE_NUM == 17:
+            DISPLAYSURF.fill((255,255,255))
+            BACKGROUND = pygame.transform.scale(BACKGROUND,(1000,700))
             DISPLAYSURF.blit(BACKGROUND, (0,0))
             DISPLAYSURF.blit(TEXT,(BOXGAP+10,WINDOWHEIGHT-BOXGAP - BOXHEIGHT + 10))
             DISPLAYSURF.blit(GRADE_TEXT,(0,100))
             DISPLAYSURF.blit(HEALTH_TEXT,(0,130))
-            DISPLAYSURF.blit(LIKE_TEXT,(0,160))
         else:
             DISPLAYSURF.fill((255,255,255))
+            BACKGROUND = pygame.transform.scale(BACKGROUND,(1000,700))
             DISPLAYSURF.blit(BACKGROUND,(0,0))
             DISPLAYSURF.blit(TEXT,(BOXGAP+50,WINDOWHEIGHT-BOXGAP - BOXHEIGHT + 10))
+            PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
             DISPLAYSURF.blit(PEOPLE,(BOXGAP+300,WINDOWHEIGHT - BOXGAP - BOXHEIGHT-500))
             DISPLAYSURF.blit(GRADE_TEXT,(0,100))
             DISPLAYSURF.blit(HEALTH_TEXT,(0,130))
-            DISPLAYSURF.blit(LIKE_TEXT,(0,160))
         if event.type == pygame.KEYDOWN:
             if SCENE_NUM==1:
                 if event.key == pygame.K_SPACE:
@@ -88,55 +104,149 @@ while not FINISH: #game loop
             if SCENE_NUM==2:
                 if event.key == pygame.K_SPACE:
                     TEXT=pygame.image.load('장면2.jpg')
-                    BACKGROUND=pygame.image.load('강의실.jpg')
-                    PEOPLE = pygame.transform.scale(PEOPLE,(400,400))
                     SCENE_NUM = SCENE_NUM + 1
                     continue
             if SCENE_NUM==3:
                 if event.key == pygame.K_SPACE:
-                    TEXT = pygame.image.load('장면3.jpg')
+                    TEXT=pygame.image.load('장면3.jpg')
+                    BACKGROUND = pygame.image.load('강의실.jpg')
                     SCENE_NUM = SCENE_NUM + 1
                     continue
-            if SCENE_NUM==4:
+            if SCENE_NUM == 4:
                 if event.key == pygame.K_SPACE:
-                    TEXT=pygame.image.load('장면4.jpg')
+                    TEXT = pygame.image.load('장면4.jpg')
                     SCENE_NUM = SCENE_NUM + 1
                     continue
-            if SCENE_NUM==5:
+            if SCENE_NUM == 5:
+                if event.key == pygame.K_SPACE:
+                    TEXT = pygame.image.load('장면5.jpg')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM==6:
                 if event.key == ord('1'):
-                    TEXT=pygame.image.load('장면4-1.jpg')
+                    TEXT=pygame.image.load('장면5-1.jpg')
                     PEOPLE = pygame.image.load('교수님2.jpg')
                     PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
                     GRADE = GRADE - 1
                     SCENE_NUM = SCENE_NUM + 1
                     continue
                 elif event.key == ord('2'):
-                    TEXT=pygame.image.load('장면4-2.jpg')
+                    TEXT=pygame.image.load('장면5-2.jpg')
                     PEOPLE = pygame.image.load('건강.jpg')
                     PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
                     HEALTH = HEALTH + 1
                     SCENE_NUM = SCENE_NUM + 1
                     continue
-            if SCENE_NUM == 6:
-                if event.key == pygame.K_SPACE:
-                    TEXT=pygame.image.load('장면5.jpg')
-                    BACKGROUND=pygame.image.load('세종대학교.jpg')
-                    SCENE_NUM = SCENE_NUM + 1
-                    continue
             if SCENE_NUM == 7:
                 if event.key == pygame.K_SPACE:
                     TEXT=pygame.image.load('장면6.jpg')
-                    PEOPLE = pygame.image.load 
+                    BACKGROUND=pygame.image.load('세종대학교.jpg')
                     SCENE_NUM = SCENE_NUM + 1
                     continue
             if SCENE_NUM == 8:
                 if event.key == pygame.K_SPACE:
                     TEXT=pygame.image.load('장면7.jpg')
+                    PEOPLE = pygame.image.load('친구.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
                     SCENE_NUM = SCENE_NUM + 1
                     continue
             if SCENE_NUM == 9:
                 if event.key == pygame.K_SPACE:
-                    TEXT=pygame.image.load
+                    TEXT = pygame.image.load('장면8.jpg')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 10:
+                if event.key == pygame.K_SPACE:
+                    TEXT = pygame.image.load('장면9.jpg')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM==11:
+                 if event.key == ord('1'):
+                    TEXT=pygame.image.load('장면9-1.png')
+                    PEOPLE = pygame.image.load('친구불쾌.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
+                    HEALTH = HEALTH - 1
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+                 elif event.key == ord('2'):
+                    TEXT=pygame.image.load('장면9-2.png')
+                    PEOPLE = pygame.image.load('친구웃음.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
+                    HEALTH = HEALTH +1 
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 12:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면10.png')
+                    BACKGROUND=pygame.image.load('세종대학교.jpg')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 13:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면11.png')
+                    #BACKGROUND=pygame.image.load('식당.jpg')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 14:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면12.png')
+                    PEOPLE=pygame.image.load('음식.jpg')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 15:
+                if event.key == ord('1'):
+                    TEXT=pygame.image.load('장면12-1.png')
+                    PEOPLE = pygame.image.load('안건강.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
+                    HEALTH = HEALTH - 1
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+                elif event.key == ord('2'):
+                    TEXT=pygame.image.load('장면12-2.png')
+                    PEOPLE = pygame.image.load('건강.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
+                    HEALTH = HEALTH + 1
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+                elif event.key == ord('3'):
+                    TEXT=pygame.image.load('장면12-3.png')
+                    PEOPLE = pygame.image.load('안건강.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
+                    HEALTH = HEALTH - 1
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+                elif event.key == ord('4'):
+                    TEXT=pygame.image.load('장면12-4.png')
+                    PEOPLE = pygame.image.load('안건강.jpg')
+                    PEOPLE = pygame.transform.scale(PEOPLE, (400,400))
+                    HEALTH = HEALTH - 2
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 16:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면13.png')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 17:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면14.png')
+                    SCENE_NUM = SCENE_NUM + 1
+                    PEOPLE = pygame.image.load('건대생.jpg')
+                    continue
+            if SCENE_NUM == 18:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면15.png')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            if SCENE_NUM == 19:
+                if event.key == pygame.K_SPACE:
+                    TEXT=pygame.image.load('장면16.png')
+                    SCENE_NUM = SCENE_NUM + 1
+                    continue
+            #if SCENE_NUM == 20:
+                #밑에다가 미니게임 추가
+            
+            
             
            
                 
@@ -149,4 +259,3 @@ while not FINISH: #game loop
             sys.exit()
     pygame.display.update()
      
-        
