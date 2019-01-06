@@ -1,0 +1,201 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+typedef struct member {
+	char *name;
+	char *number;
+	char *birth;
+}MB;
+
+//함수원형
+void input(MB **mb, int *size, int max_num);
+void ShowAll(MB **mb, int *size);
+void Delete(MB **mb, int *size);
+void Select_Birth(MB **mb, int *size);
+
+//main 
+int main() {
+	MB **mb;
+	MB *p;
+	int size = -1, n, max_num, i;
+	printf("Max_num:");
+	scanf("%d", &max_num);
+	//구조체 동적할당
+	mb = (MB **)malloc(max_num * sizeof(MB *));
+	if (mb == NULL) {
+		printf("fail");
+		return -1;
+	}
+
+	while (1) {
+		//입력형식
+		printf("*****Menu*****\n");
+		printf("<1.Registration><2.ShowAll><3.Delete><4.FindByBirth><5.Exit>\n");
+		printf("Enter_the_menu_number:");
+
+		// 메뉴 번호 입력
+		scanf("%d", &n);
+		getchar();
+
+		if (n == 1) {
+			input(mb, &size, max_num);
+		}
+		else if (n == 2) {
+			ShowAll(mb, &size);
+		}
+		else if (n == 3) {
+			Delete(mb, &size);
+		}
+		else if (n == 4) {
+			Select_Birth(mb, &size);
+		}
+		else {
+			for (i = 0; i <= size; i++) {
+				free(mb[i]->birth);
+				free(mb[i]->name);
+				free(mb[i]->number);
+			}
+			free(mb);
+			break;
+		}
+	}
+
+	return 0;
+}
+//input
+void input(MB **mb, int *size, int max_num) {  //mb는 배열의 시작주소, size는 넣을 배열의 인댁스값
+	MB tmp;
+	MB *p;
+	int i, j, len;
+	char a[100], b[100], c[100];
+	(*size)++;
+	//저장 용량이 넘어가는 경우
+	if (*size >= max_num) {
+		printf("OVERFLOW\n");
+		(*size)--;
+		return;
+	}
+	//저장할 수 있는경우
+	else {
+		//mb동적할당
+		mb[*size] = (MB *)malloc(sizeof(MB));
+
+		printf("Name:"); // 고정
+		scanf("%s", a);
+		getchar();
+		len = strlen(a);
+		mb[*size]->name = (char *)malloc( (len+1) * sizeof(char));
+		if (mb[*size]->name == NULL) {
+			printf("fail");
+			return -1;
+		}
+		strcpy(mb[*size]->name, a);
+
+		printf("Phone_number:"); // 고정
+		scanf("%s", b);
+		getchar();
+		len = strlen(b);
+		mb[*size]->number = (char *)malloc((len + 1) * sizeof(char));
+		if (mb[*size]->number == NULL) {
+			printf("fail");
+			return -1;
+		}
+		strcpy(mb[*size]->number, b);
+
+		printf("Birth:"); //고정
+		scanf("%s", c);
+		getchar();
+		len = strlen(c);
+		mb[*size]->birth = (char *)malloc((len + 1) * sizeof(char));
+		if (mb[*size]->birth == NULL) {
+			printf("fail");
+			return -1;
+		}
+		strcpy(mb[*size]->birth, c);
+		for (i = 0; i < *size; i++) {
+			for (j = 0; j < *size; j++) {
+				if (strcmp(mb[j]->name, mb[j+1]->name) > 0) {
+					tmp = *mb[j];
+					*mb[j] = *mb[j+1];
+					*mb[j + 1] = tmp;
+				}
+			}
+		}
+		//size 출력
+		printf("<<%d>>\n", *size + 1);
+		return;
+	}
+}
+
+//showAll
+void ShowAll(MB **mb, int *size) {
+	int i;
+	for (i = 0; i <= *size; i++) {
+		printf("%s %s %s\n", mb[i]->name, mb[i]->number, mb[i]->birth);
+	}
+}
+
+//delete
+void Delete(MB **mb, int *size) {
+	char name[21];
+	int i;
+	int trig = 0; //트리거(trigger)
+
+	if (*size != -1) {
+		printf("Name:");
+		scanf("%s", name);
+		getchar();
+		for (i = 0; i < *size; i++) {
+			//반복문 돌다가 같은이름 있으면 트리거 on
+			if (strcmp(mb[i]->name, name) == 0) {
+				trig = 1;
+				free(mb[i]->birth);
+				free(mb[i]->name);
+				free(mb[i]->number);
+				free(mb[i]);
+			}
+			//트리거 on되면 배열 한칸씩 당기기
+			if (trig == 1) {
+				mb[i] = mb[i+1];
+			}
+		}
+		//size 하나 감소
+		(*size)--;
+	}
+	//입력값이 없는경우 
+	else {
+		printf("NO MEMBER\n");
+	}
+}
+
+//Select Brith
+void Select_Birth(MB **mb, int *size) {
+	char birth[9] = "";
+	int len, i;
+	MB *p;
+	printf("Birth:");
+	scanf("%s", birth);
+	getchar();
+
+	len = strlen(birth); //birth 배열 길이
+						 //배열길이가 1인경우
+	if (len == 1) {
+		for (i = 0; i <= *size; i++) {
+			//입력한 달과 일치하면 출력
+			if (birth[0] == mb[i]->birth[5]) {
+				printf("%s %s %s\n", mb[i]->name, mb[i]->number, mb[i]->birth);
+			}
+		}
+	}
+	//배열길이가 2인경우
+	else if (len == 2) {
+		for (i = 0; i <= *size; i++) {
+			//입력한 달과 일치하면 출력
+			if ((birth[0] == mb[i]->birth[4]) && (birth[1] == mb[i]->birth[5])) {
+				printf("%s %s %s\n", mb[i]->name, mb[i]->number, mb[i]->birth);
+			}
+		}
+	}
+
+}
