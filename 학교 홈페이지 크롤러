@@ -1,0 +1,62 @@
+import pymysql
+import pymysql
+import datetime
+import requests
+from bs4 import BeautifulSoup
+from selenium import webdriver
+import time
+
+#크롬드라이버로 크롤러 객체 설정
+driver = webdriver.Chrome('C:/Users/lg/Desktop/chromedriver.exe')
+driver.get('http://board.sejong.ac.kr/boardview.do?pkid=110814&currentPage=1&searchField=ALL&siteGubun=19&menuGubun=1&bbsConfigFK=333&searchLowItem=ALL&searchValue=')
+time.sleep(2)
+
+
+conn = pymysql.connect(
+    host='',
+    user='',
+    password='',
+    db='dbname',
+    charset='utf8'
+)
+cursor = conn.cursor()  #데이터 배이스에 연결된 객체
+
+def insert(title, views, date, content):
+    INSERT_SQL = "INSERT INTO `table_name`(`title`, `views`, `date`, `content`) VALUES ('%s', '%d', '%s', '%s')" %(title, views, date, content)
+    return INSERT_SQL
+
+for i in range(4):
+    #comments 태이블에 데어터를 넣는다
+    time.sleep(1)
+    posts = {
+        'title':'',
+        'views':0,
+        'date': '',
+        'content': ''
+    }
+
+    title = driver.find_element_by_css_selector('td.subject-value')
+    #print(title.text)
+    posts['title'] = title.text
+
+    views = driver.find_element_by_css_selector('td.count')
+    #print(views.text)
+    posts['views'] = int(views.text)
+
+    date = driver.find_element_by_css_selector('td.date')
+    #print(date.text)
+    posts['date'] = date.text
+
+    content = driver.find_element_by_css_selector('td.content')
+    #print(content.text)
+    posts['content'] = content.text
+
+    SQL = insert(posts['title'], posts['views'], posts['date'], posts['content'])
+    cursor.execute(SQL)
+    #print(posts)
+
+    link = driver.find_element_by_css_selector('tr.prev-content td a')
+    URL = link.get_attribute('href')
+    driver.get(URL)
+
+conn.commit()
