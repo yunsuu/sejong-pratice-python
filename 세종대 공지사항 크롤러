@@ -1,0 +1,58 @@
+# my study
+내가 공부했던 것들
+
+import pymysql
+from selenium import webdriver
+import time
+
+
+#크롬드라이버로 크롤러 객체 설정
+driver = webdriver.Chrome('크롬드라이버 파일 경로')
+#크롤러 할 세종대 학사공지 사이트
+driver.get('http://board.sejong.ac.kr/boardview.do?pkid=93848&currentPage=1&searchField=ALL&siteGubun=19&menuGubun=1&bbsConfigFK=334&searchLowItem=ALL&searchValue=')
+time.sleep(2)
+
+#database와 연결하는 과정
+conn = pymysql.connect(
+    host='localhost',
+    user='root',
+    password='비밀번호',
+    db='database 이름',
+    charset='utf8'
+)
+cursor = conn.cursor()  #데이터 배이스에 연결된 객체
+
+def insert(title, views, date, content):
+    INSERT_SQL = "INSERT INTO `hakerton`(`title`, `views`, `date`, `content`) VALUES ('%s', '%d', '%s', '%s')" %(title, views, date, content)
+    return INSERT_SQL
+
+for i in range('반복하고 싶은 횟수'):
+    #comments 태이블에 데어터를 넣는다
+    time.sleep(1)
+    posts = {
+        'title':'',
+        'views':0,
+        'date': '',
+        'content': ''
+    }
+
+    title_row = driver.find_element_by_css_selector('td.subject-value')
+    title = title_row.text
+
+    views_row = driver.find_element_by_css_selector('td.count')
+    views = int(views_row.text)
+
+    date_row = driver.find_element_by_css_selector('td.date')
+    date = date_row.text
+
+    content_row = driver.find_element_by_css_selector('td.content')
+    content = content_row.text
+
+    SQL = insert(title, views, date, content)
+    cursor.execute(SQL)
+
+    link = driver.find_element_by_css_selector('tr.prev-content td a')
+    URL = link.get_attribute('href')
+    driver.get(URL)
+
+conn.commit()
